@@ -265,9 +265,15 @@
 		{
 			if(!isLegalMove(orix,oriy,destx,desty))
 				return 0;
-			var piece = board[oriy][orix];  var dest = board[desty][destx];
-			var value = 10*Math.abs(dest)+8-Math.abs(4-destx)-Math.abs(4-desty);
-			if((piece==W_PAWN && desty==0) || (piece==B_PAWN && desty==7))
+			var piece = board[oriy][orix];
+			var dest = board[desty][destx];
+			var value = 10*Math.abs(dest); //initial value is simply what the move captures
+			if(Math.abs(piece)!=W_KING) { //favor moving toward center of board, except for king
+				var factor = 1.0;
+				if(Math.abs(piece)==W_PAWN) factor = 1.1; //favor pawn development more
+				value += factor*(8-Math.abs(4-destx)-Math.abs(4-desty));
+			}
+			if((piece==W_PAWN && desty==0) || (piece==B_PAWN && desty==7)) //favor pawn promotion
 				value = 10*W_QUEEN;
 			if(recursion_depth<MAX_THOUGHT_LEVEL)
 			{
