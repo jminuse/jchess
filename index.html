@@ -35,7 +35,7 @@
 		var castling = -1;
 		var singlePlayer = true;
 		board = [[B_ROOK,B_KNIGHT,B_BISHOP,B_QUEEN,B_KING,B_BISHOP,B_KNIGHT,B_ROOK],[B_PAWN,B_PAWN,B_PAWN,B_PAWN,B_PAWN,B_PAWN,B_PAWN,B_PAWN],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[W_PAWN,W_PAWN,W_PAWN,W_PAWN,W_PAWN,W_PAWN,W_PAWN,W_PAWN],[W_ROOK,W_KNIGHT,W_BISHOP,W_QUEEN,W_KING,W_BISHOP,W_KNIGHT,W_ROOK]];
-		document.write("<img style='position:absolute; left:"+X_OFFSET+"px; top:"+Y_OFFSET+"px' width='"+SIZE*8+"' height='"+SIZE*8+"' alt='Board' id='boardPic' src='chessBoard.gif'>");
+		document.write("<img style='position:absolute; left:"+X_OFFSET+"px; top:"+Y_OFFSET+"px' width='"+SIZE*8+"' height='"+SIZE*8+"' alt='Board' id='boardPic' src='chessBoard.jpg'>");
 		for(var y=0; y<board.length; y++)
 		{
 			for(var x=0; x<board[y].length; x++)
@@ -105,11 +105,11 @@
 				if(selectedx>=0 && selectedx<8 && selectedy>=0 && selectedy<8 && board[selectedy][selectedx]!=EMPTY && whoseTurn==(board[selectedy][selectedx]>0) )
 				{
 					if(highlightx>=0) document.getElementById('highlight'+highlightx+""+highlighty).src = "empty.gif";
-					document.getElementById('highlight'+selectedx+""+selectedy).src = "highlight.gif";
+					document.getElementById('highlight'+selectedx+""+selectedy).src = "highlight_red.png";
 					highlightx = selectedx; highlighty = selectedy;
 					var legal = legalMoves(selectedx, selectedy);
 					for(i=0; i<legal.length; i+=4)
-						document.getElementById('highlight'+(legal[i+2])+""+(legal[i+3])).src = "highlightBlue.gif";
+						document.getElementById('highlight'+(legal[i+2])+""+(legal[i+3])).src = "highlight_blue.png";
 					document.onmousedown = released; 
 					document.onmousemove = update;
 					document.onmouseup = falsefunc;
@@ -168,7 +168,7 @@
 				castling = -1;
 				selectNext = ( (board[y][x]>0) == whoseTurn);
 			}
-			document.getElementById('highlight'+x+""+y).src = "highlight.gif";
+			document.getElementById('highlight'+x+""+y).src = "highlight_red.png";
 			document.getElementById('highlight'+highlightx+""+highlighty).src = "empty.gif";
 			highlightx = x; highlighty = y;
 			selectedx = -1;
@@ -228,7 +228,7 @@
 				if(board[bestMove[1]][bestMove[0]]==B_PAWN && bestMove[3]==7)
 					board[bestMove[1]][bestMove[0]]=B_PAWN;
 				move(bestMove[1], bestMove[0], bestMove[3], bestMove[2]);
-				document.getElementById('highlight'+bestMove[2]+""+bestMove[3]).src = "highlight.gif";
+				document.getElementById('highlight'+bestMove[2]+""+bestMove[3]).src = "highlight_red.png";
 				document.getElementById('highlight'+highlightx+""+highlighty).src = "empty.gif";
 				highlightx = bestMove[2]; highlighty = bestMove[3]; 
 			}
