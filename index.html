@@ -428,12 +428,12 @@
 				if(p>0 && x==4 && y==7)
 				{
 					if(board[7][5]==EMPTY && board[7][6]==EMPTY && board[7][7]==W_ROOK) moves = add(moves, [4,7,6,7]);
-					if(board[7][3]==EMPTY && board[7][2]==EMPTY && board[7][1]==EMPTY && board[7][0]==W_ROOK) moves = add(moves, [4,7,1,7]);
+					if(board[7][3]==EMPTY && board[7][2]==EMPTY && board[7][1]==EMPTY && board[7][0]==W_ROOK) moves = add(moves, [4,7,2,7]);
 				}
 				else if(!singlePlayer && p<0 && x==4 && y==0)
 				{
 					if(board[0][5]==EMPTY && board[0][6]==EMPTY && board[0][7]==B_ROOK) moves = add(moves, [4,0,6,0]);
-					if(board[0][3]==EMPTY && board[0][2]==EMPTY && board[0][1]==EMPTY && board[0][0]==B_ROOK) moves = add(moves, [4,0,1,0]);
+					if(board[0][3]==EMPTY && board[0][2]==EMPTY && board[0][1]==EMPTY && board[0][0]==B_ROOK) moves = add(moves, [4,0,2,0]);
 				}
 			}
 			return moves;
