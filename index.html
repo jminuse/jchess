@@ -6,7 +6,12 @@
     </head>
     <body style="color:white; background-color:#510; text-align:center">
 		Recursion depth: 1<input id="recursion-depth" type="range" min="1" max="5" value="3"/>5
-        <script language="JavaScript">
+		<div id='status-bar' style='font-size:150%;'></div>
+        <script>
+		function status(s) {
+			document.getElementById('status-bar').innerHTML = s;
+			setTimeout(function(){ document.getElementById('status-bar').innerHTML = ''; }, 2000);
+		}
 		var EMPTY = 0;
 		var W_PAWN = 1;
 		var B_PAWN = -1;
@@ -22,7 +27,7 @@
 		var B_KING = -1000;
 		var SIZE = 60;
 		var X_OFFSET = window.innerWidth/2-SIZE*4;
-		var Y_OFFSET = 50;
+		var Y_OFFSET = 100;
 		var mousex = 0;
 		var mousey = 0;
 		var algor = 0;
@@ -124,7 +129,7 @@
 		}
 		function released(e)
 		{
-			//alert("Mouse released.");
+			//status("Mouse released.");
 			getMouseXY(e);
 			var x = Math.floor((mousex-X_OFFSET)/SIZE);
 			var y = Math.floor((mousey-Y_OFFSET)/SIZE);
@@ -151,15 +156,15 @@
 					castling = -1;
 				}
 				document.getElementById('square'+x+""+y).src = pictureFile(board[y][x]);
-				if(winner && whoseTurn==0) alert("Black wins!");
-				else if(winner && whoseTurn==1) alert("White wins!");
+				if(winner && whoseTurn==0) status("Black wins!");
+				else if(winner && whoseTurn==1) status("White wins!");
 				if(whoseTurn==0) whoseTurn=1;
 				else whoseTurn=0;
 				for(var tx=0; tx<8; tx++)
 					for(var ty=0; ty<8; ty++)
 					{
 						if(Math.abs(board[ty][tx])==W_KING && isDanger(tx,ty))
-							alert("Check!");
+							status("Check!");
 					}
 			}
 			else
@@ -190,8 +195,8 @@
 			}
 			document.getElementById('square'+dx+""+dy).src = pictureFile(board[dy][dx]);
 			document.getElementById('square'+x+""+y).src = "empty.gif";
-			if(winningPlayer==0) alert("Black wins!");
-			if(winningPlayer==1) alert("White wins!");
+			if(winningPlayer==0) status("Black wins!");
+			if(winningPlayer==1) status("White wins!");
 		}
 		function compMove()
 		{
@@ -212,7 +217,7 @@
 			{
 				var thisValue = moveValue(moves[moveNumber], moves[moveNumber+1], moves[moveNumber+2], moves[moveNumber+3], 0);
 				thoughtLevel = 0;
-				//alert("Move number "+moveNumber/4+"/"+moves.length/4);
+				//status("Move number "+moveNumber/4+"/"+moves.length/4);
 				if(thisValue>bestValue || (thisValue==bestValue && Math.random()<0.5) )
 				{
 					bestMove = [moves[moveNumber], moves[moveNumber+1], moves[moveNumber+2], moves[moveNumber+3]];
@@ -238,13 +243,13 @@
 					if(Math.abs(board[ty][tx])==W_KING && isDanger(tx,ty))
 					{
 						if(noLegalMoves)
-							{winner = true; alert("Checkmate!");}
+							{winner = true; status("Checkmate!");}
 						else
-							alert("Check!")
+							status("Check!")
 					}
 				}
 			if(noLegalMoves && !winner)
-				alert("Stalemate...");
+				status("Stalemate...");
 			castling = -1;
 			whoseTurn = 1;
 		}
@@ -275,8 +280,8 @@
 							var enemyMoves = legalMoves(ex, ey);
 							for(var i=0; i<enemyMoves.length-3; i+=4)
 							{
-								//alert(i/4);
-								//alert("Considering: "+ex+", "+ey+", "+enemyMoves[i+2]+", "+enemyMoves[i+3]);
+								//status(i/4);
+								//status("Considering: "+ex+", "+ey+", "+enemyMoves[i+2]+", "+enemyMoves[i+3]);
 								var thisValue = moveValue(ex, ey, enemyMoves[i+2], enemyMoves[i+3], recursion_depth+1);
 								//var thisValue = Math.abs(board[enemyMoves[i+3]][enemyMoves[i+3]]);
 								if(thisValue>bestValue)
