@@ -1,10 +1,11 @@
-<!DOCTYPE HTML PUBLIC "-//W3C/DTD HTML 1.0 Transitional//EN" "http://www.w3c.org/TR/xhtmll/DTD/xhtmll-transitional.dtd">
-<html xlmns="http://www.w3c.org/1999/xhtml">
-    <head>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
         <title>JChess</title>
     </head>
-    <body style="color:blue; background-color:black; text-align:center">
-	<font size="5">Play Chess. JChess.<br></font>
+    <body style="color:white; background-color:#510; text-align:center">
+		Recursion depth: 1<input id="recursion-depth" type="range" min="1" max="9" value="5"/>9
         <script language="JavaScript">
 		var EMPTY = 0;
 		var W_PAWN = 1;
@@ -22,7 +23,6 @@
 		var SIZE = 60;
 		var X_OFFSET = window.innerWidth/2-SIZE*4;
 		var Y_OFFSET = 50;
-		var MAX_THOUGHT_LEVEL = 5;
 		var thoughtLevel = 0;
 		var mousex = 0;
 		var mousey = 0;
@@ -55,7 +55,6 @@
 		}
 		document.write("<img style='position:absolute; left:"+X_OFFSET+"px; top:"+Y_OFFSET+"px' width='"+SIZE+"' height='"+SIZE+"' alt='Selected Piece' id='selectedPiece' src='empty.gif'>");
 		document.onmousedown = startGame;
-		status = "Play Chess. JChess.";
 		update();
 		var BUTTON_X = X_OFFSET+SIZE*4-128;	var BUTTON_Y = Y_OFFSET+SIZE*4-101;
 		document.write("<img style='position:absolute; left:"+BUTTON_X+"px; top:"+BUTTON_Y+"px' alt='Single Player' id='startButton' src='chessStartButton.gif'>");
@@ -210,6 +209,7 @@
 		}
 		function compMove()
 		{
+			MAX_THOUGHT_LEVEL = document.getElementById('recursion-depth').value;
 			if(winner) return;
 			var moves = new Array();
 			for(var x=0; x<8; x++)
