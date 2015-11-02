@@ -33,7 +33,7 @@
 		var whoseTurn = 1;
 		var winner = false;
 		var castling = -1;
-		var singlePlayer = false;
+		var singlePlayer = true;
 		board = [[B_ROOK,B_KNIGHT,B_BISHOP,B_QUEEN,B_KING,B_BISHOP,B_KNIGHT,B_ROOK],[B_PAWN,B_PAWN,B_PAWN,B_PAWN,B_PAWN,B_PAWN,B_PAWN,B_PAWN],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[W_PAWN,W_PAWN,W_PAWN,W_PAWN,W_PAWN,W_PAWN,W_PAWN,W_PAWN],[W_ROOK,W_KNIGHT,W_BISHOP,W_QUEEN,W_KING,W_BISHOP,W_KNIGHT,W_ROOK]];
 		document.write("<img style='position:absolute; left:"+X_OFFSET+"px; top:"+Y_OFFSET+"px' width='"+SIZE*8+"' height='"+SIZE*8+"' alt='Board' id='boardPic' src='chessBoard.gif'>");
 		for(var y=0; y<board.length; y++)
@@ -53,21 +53,8 @@
 			document.write("<br>");
 		}
 		document.write("<img style='position:absolute; left:"+X_OFFSET+"px; top:"+Y_OFFSET+"px' width='"+SIZE+"' height='"+SIZE+"' alt='Selected Piece' id='selectedPiece' src='empty.gif'>");
-		document.onmousedown = startGame;
+		document.onmousedown = pressed;
 		update();
-		var BUTTON_X = X_OFFSET+SIZE*4-128;	var BUTTON_Y = Y_OFFSET+SIZE*4-101;
-		document.write("<img style='position:absolute; left:"+BUTTON_X+"px; top:"+BUTTON_Y+"px' alt='Single Player' id='startButton' src='chessStartButton.gif'>");
-		function startGame(e)
-		{
-			getMouseXY(e);
-			if(mousex>BUTTON_X+22 && mousey>BUTTON_Y+84 && mousex<BUTTON_X+132 && mousey<BUTTON_Y+112)
-				singlePlayer = true;
-			else if(mousex>BUTTON_X+138 && mousey>BUTTON_Y+109 && mousex<BUTTON_X+237 && mousey<BUTTON_Y+137)
-				singlePlayer = false;
-			else return;
-			document.getElementById("startButton").src = "empty.gif";
-			document.onmousedown = pressed;
-		}
 		function movePicture(pieceNumber, startx, starty, endx, endy)
 		{
 			document.getElementById('selectedPiece').style.left = +X_OFFSET+startx+"px";
@@ -208,7 +195,7 @@
 		}
 		function compMove()
 		{
-			MAX_THOUGHT_LEVEL = document.getElementById('recursion-depth').value;
+			max_recursion_depth = document.getElementById('recursion-depth').value;
 			if(winner) return;
 			var moves = new Array();
 			for(var x=0; x<8; x++)
@@ -275,7 +262,7 @@
 			}
 			if((piece==W_PAWN && desty==0) || (piece==B_PAWN && desty==7)) //favor pawn promotion
 				value = 10*W_QUEEN;
-			if(recursion_depth<MAX_THOUGHT_LEVEL)
+			if(recursion_depth<max_recursion_depth)
 			{
 				board[oriy][orix] = EMPTY; board[desty][destx] = piece;
 				var bestValue = 0;
