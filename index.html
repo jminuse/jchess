@@ -5,7 +5,7 @@
         <title>JChess</title>
     </head>
     <body style="color:white; background-color:#510; text-align:center">
-		Recursion depth: 1<input id="recursion-depth" type="range" min="1" max="9" value="5"/>9
+		Recursion depth: 1<input id="recursion-depth" type="range" min="1" max="5" value="3"/>5
         <script language="JavaScript">
 		var EMPTY = 0;
 		var W_PAWN = 1;
@@ -23,7 +23,6 @@
 		var SIZE = 60;
 		var X_OFFSET = window.innerWidth/2-SIZE*4;
 		var Y_OFFSET = 50;
-		var thoughtLevel = 0;
 		var mousex = 0;
 		var mousey = 0;
 		var algor = 0;
@@ -224,7 +223,7 @@
 			var bestValue = -10000;
 			for(var moveNumber=0; moveNumber<moves.length; moveNumber+=4)
 			{
-				var thisValue = moveValue(moves[moveNumber], moves[moveNumber+1], moves[moveNumber+2], moves[moveNumber+3]);
+				var thisValue = moveValue(moves[moveNumber], moves[moveNumber+1], moves[moveNumber+2], moves[moveNumber+3], 0);
 				thoughtLevel = 0;
 				//alert("Move number "+moveNumber/4+"/"+moves.length/4);
 				if(thisValue>bestValue || (thisValue==bestValue && Math.random()<0.5) )
@@ -262,7 +261,7 @@
 			castling = -1;
 			whoseTurn = 1;
 		}
-		function moveValue(orix, oriy, destx, desty)
+		function moveValue(orix, oriy, destx, desty, recursion_depth)
 		{
 			if(!isLegalMove(orix,oriy,destx,desty))
 				return 0;
@@ -270,9 +269,8 @@
 			var value = 10*Math.abs(dest)+8-Math.abs(4-destx)-Math.abs(4-desty);
 			if((piece==W_PAWN && desty==0) || (piece==B_PAWN && desty==7))
 				value = 10*W_QUEEN;
-			if(thoughtLevel<MAX_THOUGHT_LEVEL)
+			if(recursion_depth<MAX_THOUGHT_LEVEL)
 			{
-				thoughtLevel++;
 				board[oriy][orix] = EMPTY; board[desty][destx] = piece;
 				var bestValue = 0;
 				for(var ex=0; ex<8; ex++)
@@ -286,7 +284,7 @@
 							{
 								//alert(i/4);
 								//alert("Considering: "+ex+", "+ey+", "+enemyMoves[i+2]+", "+enemyMoves[i+3]);
-								var thisValue = moveValue(ex, ey, enemyMoves[i+2], enemyMoves[i+3]);
+								var thisValue = moveValue(ex, ey, enemyMoves[i+2], enemyMoves[i+3], recursion_depth+1);
 								//var thisValue = Math.abs(board[enemyMoves[i+3]][enemyMoves[i+3]]);
 								if(thisValue>bestValue)
 									bestValue = thisValue;
