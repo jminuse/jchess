@@ -268,7 +268,7 @@
 				value += factor*(8-Math.abs(4-destx)-Math.abs(4-desty));
 			}
 			if((piece==W_PAWN && desty==0) || (piece==B_PAWN && desty==7)) //favor pawn promotion
-				value = 10*W_QUEEN;
+				value = 10*(W_QUEEN-W_PAWN);
 			if(recursion_depth<max_recursion_depth)
 			{
 				board[oriy][orix] = EMPTY; board[desty][destx] = piece;
@@ -282,10 +282,7 @@
 							var enemyMoves = legalMoves(ex, ey);
 							for(var i=0; i<enemyMoves.length-3; i+=4)
 							{
-								//status(i/4);
-								//status("Considering: "+ex+", "+ey+", "+enemyMoves[i+2]+", "+enemyMoves[i+3]);
 								var thisValue = moveValue(ex, ey, enemyMoves[i+2], enemyMoves[i+3], recursion_depth+1);
-								//var thisValue = Math.abs(board[enemyMoves[i+3]][enemyMoves[i+3]]);
 								if(thisValue>bestValue)
 									bestValue = thisValue;
 							}
