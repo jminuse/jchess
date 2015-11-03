@@ -181,7 +181,7 @@
 			document.onmousedown = pressed;
 			document.onmouseup = null;
 			if(selectNext) pressed(e);
-			if(singlePlayer && whoseTurn==0) {setTimeout("compMove()",100);}
+			if(singlePlayer && whoseTurn==0) compMove();
 		}
 		function move(y, x, dy, dx)
 		{
