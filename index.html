@@ -215,9 +215,13 @@
 			var bestValue = -10000;
 			for(var moveNumber=0; moveNumber<moves.length; moveNumber+=4)
 			{
+				//start_time = +new Date();
+				//current_time = start_time;
+				//max_recursion_time = 100.0*max_recursion_depth/moves.length;
+				//recursion_counter = 0;
+				
 				var thisValue = moveValue(moves[moveNumber], moves[moveNumber+1], moves[moveNumber+2], moves[moveNumber+3], 0);
-				thoughtLevel = 0;
-				//status("Move number "+moveNumber/4+"/"+moves.length/4);
+				
 				if(thisValue>bestValue || (thisValue==bestValue && Math.random()<0.5) )
 				{
 					bestMove = [moves[moveNumber], moves[moveNumber+1], moves[moveNumber+2], moves[moveNumber+3]];
@@ -267,8 +271,14 @@
 			}
 			if((piece==W_PAWN && desty==0) || (piece==B_PAWN && desty==7)) //favor pawn promotion
 				value = 10*W_QUEEN;
-			if(recursion_depth<max_recursion_depth)
-			{
+			
+			//recursion_counter++;
+			//if(recursion_counter>1000) {
+			//	recursion_counter = 0;
+			//	current_time = +new Date();
+			//}
+			//if(current_time-start_time < max_recursion_time) {
+			if(recursion_depth<max_recursion_depth) {
 				board[oriy][orix] = EMPTY; board[desty][destx] = piece;
 				var bestValue = 0;
 				for(var ex=0; ex<8; ex++)
