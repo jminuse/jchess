@@ -261,8 +261,6 @@
 		}
 		function moveValue(orix, oriy, destx, desty, recursion_depth)
 		{
-			if(!isLegalMove(orix,oriy,destx,desty))
-				return 0;
 			var piece = board[oriy][orix];
 			var dest = board[desty][destx];
 			var value = 10*Math.abs(dest); //initial value is simply what the move captures
