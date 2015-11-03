@@ -141,6 +141,9 @@
 			var selectNext = false;
 			if( isLegalMove(selectedx, selectedy, x, y) )
 			{
+				max_recursion_depth = document.getElementById('recursion-depth').value;
+				status(moveValue(selectedx, selectedy, x, y, 0));
+				
 				if(board[y][x]==W_KING || board[y][x]==B_KING) winner=true;
 				if( (board[selectedy][selectedx]==W_PAWN && y==0) || (board[selectedy][selectedx]==B_PAWN && y==7) )
 					board[selectedy][selectedx] = W_QUEEN*board[selectedy][selectedx]/Math.abs(board[selectedy][selectedx]);
@@ -257,7 +260,7 @@
 				status("Stalemate...");
 			castling = -1;
 			whoseTurn = 1;
-			status( ((new Date()) - start_compmove_time)/1000 + 's');
+			//status( ((new Date()) - start_compmove_time)/1000 + 's');
 		}
 		function moveValue(orix, oriy, destx, desty, recursion_depth)
 		{
@@ -267,8 +270,8 @@
 			if(Math.abs(dest)==W_KING)
 				return value; //return immediately if checkmate is found
 			if(Math.abs(piece)!=W_KING) { //favor moving toward center of board, except for king
-				var factor = 1.0;
-				if(Math.abs(piece)==W_PAWN) factor = 1.1; //favor pawn development more
+				var factor = 0.1;
+				if(Math.abs(piece)==W_PAWN) factor = 0.11; //favor pawn development more
 				value += factor*(8-Math.abs(4-destx)-Math.abs(4-desty));
 			}
 			if((piece==W_PAWN && desty==0) || (piece==B_PAWN && desty==7)) //favor pawn promotion
@@ -280,6 +283,7 @@
 			//	current_time = +new Date();
 			//}
 			//if(current_time-start_time < max_recursion_time) {
+			
 			if(recursion_depth<max_recursion_depth) {
 				board[oriy][orix] = EMPTY; board[desty][destx] = piece;
 				var bestValue = 0;
@@ -310,23 +314,21 @@
 		}
 		function pictureFile(p)
 		{
-			switch(p)
-			{
-			case EMPTY: picFile = "empty.gif"; break;
-			case W_PAWN: picFile = "w_pawn.gif"; break;
-			case B_PAWN: picFile = "b_pawn.gif"; break;
-			case W_KNIGHT: picFile = "w_knight.gif"; break;
-			case B_KNIGHT: picFile = "b_knight.gif"; break;
-			case W_BISHOP: picFile = "w_bishop.gif"; break;
-			case B_BISHOP: picFile = "b_bishop.gif"; break;
-			case W_ROOK: picFile = "w_rook.gif"; break;
-			case B_ROOK: picFile = "b_rook.gif"; break;
-			case W_QUEEN: picFile = "w_queen.gif"; break;
-			case B_QUEEN: picFile = "b_queen.gif"; break;
-			case W_KING: picFile = "w_king.gif"; break;
-			case B_KING: picFile = "b_king.gif"; break;
+			switch(p) {
+				case EMPTY: return "empty.gif";
+				case W_PAWN: return "w_pawn.gif";
+				case B_PAWN: return "b_pawn.gif";
+				case W_KNIGHT: return "w_knight.gif";
+				case B_KNIGHT: return "b_knight.gif";
+				case W_BISHOP: return "w_bishop.gif";
+				case B_BISHOP: return "b_bishop.gif";
+				case W_ROOK: return "w_rook.gif";
+				case B_ROOK: return "b_rook.gif";
+				case W_QUEEN: return "w_queen.gif";
+				case B_QUEEN: return "b_queen.gif";
+				case W_KING: return "w_king.gif";
+				case B_KING: return "b_king.gif";
 			}
-			return picFile;
 		}
 		function legalMoves(x,y)
 		{
