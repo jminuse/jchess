@@ -200,7 +200,7 @@
 		}
 		function compMove()
 		{
-			var start_compmove_time = +new date();
+			var start_compmove_time = +new Date();
 			max_recursion_depth = document.getElementById('recursion-depth').value;
 			if(winner) return;
 			var moves = new Array();
@@ -253,7 +253,7 @@
 				status("Stalemate...");
 			castling = -1;
 			whoseTurn = 1;
-			status(new Date() - start_compmove_time);
+			status((new Date()) - start_compmove_time);
 		}
 		function moveValue(orix, oriy, destx, desty, recursion_depth)
 		{
