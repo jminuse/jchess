@@ -181,7 +181,7 @@
 			document.onmousedown = pressed;
 			document.onmouseup = null;
 			if(selectNext) pressed(e);
-			if(singlePlayer && whoseTurn==0) {setTimeout("compMove()",100);}
+			if(singlePlayer && whoseTurn==0) setTimeout( compMove, 100 );
 		}
 		function move(y, x, dy, dx)
 		{
@@ -200,6 +200,7 @@
 		}
 		function compMove()
 		{
+			var start_compmove_time = +new Date();
 			max_recursion_depth = document.getElementById('recursion-depth').value;
 			if(winner) return;
 			var moves = new Array();
@@ -208,7 +209,7 @@
 				for(var y=0; y<8; y++)
 				{
 					if(board[y][x]<0)
-						moves = add(moves, legalMoves(x,y));
+						moves = moves.concat(legalMoves(x,y));
 				}
 			}
 			var bestMove = [-1, -1, -1, -1];
@@ -256,6 +257,7 @@
 				status("Stalemate...");
 			castling = -1;
 			whoseTurn = 1;
+			status( ((new Date()) - start_compmove_time)/1000 + 's');
 		}
 		function moveValue(orix, oriy, destx, desty, recursion_depth)
 		{
@@ -264,13 +266,15 @@
 			var piece = board[oriy][orix];
 			var dest = board[desty][destx];
 			var value = 10*Math.abs(dest); //initial value is simply what the move captures
+			if(Math.abs(dest)==W_KING)
+				return value; //return immediately if checkmate is found
 			if(Math.abs(piece)!=W_KING) { //favor moving toward center of board, except for king
 				var factor = 1.0;
 				if(Math.abs(piece)==W_PAWN) factor = 1.1; //favor pawn development more
 				value += factor*(8-Math.abs(4-destx)-Math.abs(4-desty));
 			}
 			if((piece==W_PAWN && desty==0) || (piece==B_PAWN && desty==7)) //favor pawn promotion
-				value = 10*W_QUEEN;
+				value = 10*(W_QUEEN-W_PAWN);
 			
 			//recursion_counter++;
 			//if(recursion_counter>1000) {
@@ -290,10 +294,7 @@
 							var enemyMoves = legalMoves(ex, ey);
 							for(var i=0; i<enemyMoves.length-3; i+=4)
 							{
-								//status(i/4);
-								//status("Considering: "+ex+", "+ey+", "+enemyMoves[i+2]+", "+enemyMoves[i+3]);
 								var thisValue = moveValue(ex, ey, enemyMoves[i+2], enemyMoves[i+3], recursion_depth+1);
-								//var thisValue = Math.abs(board[enemyMoves[i+3]][enemyMoves[i+3]]);
 								if(thisValue>bestValue)
 									bestValue = thisValue;
 							}
@@ -336,10 +337,10 @@
 			if(p==W_PAWN || p==B_PAWN)
 			{
 				if(p>0) direction=-1; else direction=1;
-				if(y+direction<8 && y+direction>=0 && board[y+direction][x]==EMPTY) moves = add(moves, [x,y,x,y+direction]);
-				if( ( (p>0 && y==6) || ( p<0 && y==1) ) && board[y+direction][x]==EMPTY && board[y+2*direction][x]==EMPTY) moves = add(moves, [x,y,x,y+2*direction]);
-				if(x+1<8 && y+direction<8 && y+direction>=0 && areEnemies(p, board[y+direction][x+1]) ) moves = add(moves, [x,y,x+1,y+direction]);
-				if(x-1>=0 && y+direction<8 && y+direction>=0 && areEnemies(p, board[y+direction][x-1]) ) moves = add(moves, [x,y,x-1,y+direction]);
+				if(y+direction<8 && y+direction>=0 && board[y+direction][x]==EMPTY) add(moves, x,y,x,y+direction);
+				if( ( (p>0 && y==6) || ( p<0 && y==1) ) && board[y+direction][x]==EMPTY && board[y+2*direction][x]==EMPTY) add(moves, x,y,x,y+2*direction);
+				if(x+1<8 && y+direction<8 && y+direction>=0 && areEnemies(p, board[y+direction][x+1]) ) add(moves, x,y,x+1,y+direction);
+				if(x-1>=0 && y+direction<8 && y+direction>=0 && areEnemies(p, board[y+direction][x-1]) ) add(moves, x,y,x-1,y+direction);
 			}
 			else if(p==W_KNIGHT || p==B_KNIGHT)
 			{
@@ -348,7 +349,7 @@
 					{
 						var testx = i+x; var testy = j+y;
 						if(i!=0 && j!=0 && Math.abs(i)!=Math.abs(j) && testx>=0 && testx<8 && testy>=0 && testy<8 && ( board[testy][testx]==EMPTY || areEnemies(p, board[testy][testx]) ) )
-							moves = add(moves, [x,y,testx,testy]);
+							add(moves, x,y,testx,testy);
 					}
 			}
 			else if(p==W_BISHOP || p==B_BISHOP)
@@ -360,7 +361,7 @@
 						var i=x+xdir; var j=y+ydir;
 						while(j>=0 && j<8 && i>=0 && i<8 && (board[j][i]==EMPTY || areEnemies(p, board[j][i])) )
 						{
-							moves = add(moves, [x,y,i,j]);
+							add(moves, x,y,i,j);
 							if(board[j][i]!=EMPTY) break;
 							i+=xdir; j+=ydir;
 						}
@@ -378,7 +379,7 @@
 							var i=x+xdir; var j=y+ydir;
 							while(j>=0 && j<8 && i>=0 && i<8 && (board[j][i]==EMPTY || areEnemies(p, board[j][i])) )
 							{
-								moves = add(moves, [x,y,i,j]);
+								add(moves, x,y,i,j);
 								if(board[j][i]!=EMPTY) break;
 								i+=xdir; j+=ydir;
 							}
@@ -395,7 +396,7 @@
 						var i=x+xdir; var j=y+ydir;
 						while(j>=0 && j<8 && i>=0 && i<8 && (board[j][i]==EMPTY || areEnemies(p, board[j][i])) )
 						{
-							moves = add(moves, [x,y,i,j]);
+							add(moves, x,y,i,j);
 							if(board[j][i]!=EMPTY) break;
 							i+=xdir; j+=ydir;
 						}
@@ -410,7 +411,7 @@
 							var i=x+xdir; var j=y+ydir;
 							while(j>=0 && j<8 && i>=0 && i<8 && (board[j][i]==EMPTY || areEnemies(p, board[j][i])) )
 							{
-								moves = add(moves, [x,y,i,j]);
+								add(moves, x,y,i,j);
 								if(board[j][i]!=EMPTY) break;
 								i+=xdir; j+=ydir;
 							}
@@ -429,21 +430,20 @@
 					{
 						var temp = board[ytest][xtest];
 						board[ytest][xtest] = p;
-						if( (temp==EMPTY || areEnemies(p, temp)) && !isDanger(xtest, ytest) )
-							{moves = add(moves, [x,y,xtest,ytest]);}
+						if( (temp==EMPTY || areEnemies(p, temp)) && !isDanger(xtest, ytest) ) add(moves, x,y,xtest,ytest);
 						board[ytest][xtest] = temp;
 					}
 				}
 				board[y][x] = p;
 				if(p>0 && x==4 && y==7)
 				{
-					if(board[7][5]==EMPTY && board[7][6]==EMPTY && board[7][7]==W_ROOK) moves = add(moves, [4,7,6,7]);
-					if(board[7][3]==EMPTY && board[7][2]==EMPTY && board[7][1]==EMPTY && board[7][0]==W_ROOK) moves = add(moves, [4,7,2,7]);
+					if(board[7][5]==EMPTY && board[7][6]==EMPTY && board[7][7]==W_ROOK) add(moves, 4,7,6,7);
+					if(board[7][3]==EMPTY && board[7][2]==EMPTY && board[7][1]==EMPTY && board[7][0]==W_ROOK) add(moves, 4,7,2,7);
 				}
 				else if(!singlePlayer && p<0 && x==4 && y==0)
 				{
-					if(board[0][5]==EMPTY && board[0][6]==EMPTY && board[0][7]==B_ROOK) moves = add(moves, [4,0,6,0]);
-					if(board[0][3]==EMPTY && board[0][2]==EMPTY && board[0][1]==EMPTY && board[0][0]==B_ROOK) moves = add(moves, [4,0,2,0]);
+					if(board[0][5]==EMPTY && board[0][6]==EMPTY && board[0][7]==B_ROOK) add(moves, 4,0,6,0);
+					if(board[0][3]==EMPTY && board[0][2]==EMPTY && board[0][1]==EMPTY && board[0][0]==B_ROOK) add(moves, 4,0,2,0);
 				}
 			}
 			return moves;
@@ -547,14 +547,12 @@
 			}
 			return false;
 		}
-		function add(a, b)
+		function add(a, x,y,i,j)
 		{
-			c = new Array()
-			for(firstIndex=0; firstIndex<a.length; firstIndex++)
-				c[firstIndex]=a[firstIndex];
-			for(secondIndex=0; secondIndex<b.length; secondIndex++)
-				c[secondIndex+a.length]=b[secondIndex];
-			return c;
+			a.push(x);
+			a.push(y);
+			a.push(i);
+			a.push(j);
 		}
 		function falsefunc() {return false;}
 		function truefunc() {return true;}
